@@ -20,7 +20,7 @@ interface ApiServer {
 ////        passwQuery: String,
 //    ): Response<User>
 
-    @GET("/get_one1_user/{user_id}")
+    @GET("/get_one_user/{user_id}")
     fun getUserOfId(
         @Path("user_id") id: Int
 //        @Query("emailQuery")

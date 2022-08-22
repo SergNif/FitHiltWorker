@@ -114,24 +114,26 @@ class Pg1MaleFemale : Fragment() {
             when(responce) {
                 is Resource.Success -> {
                     Log.e(TAG, " Resource.Success  ${responce.data.toString()}")
-                    Log.e(TAG, " Resource.Success  ${responce.message.toString()}")
-                    binding.loading.visibility = View.INVISIBLE
+
+
 //                    viewModel.userLiveData.value.toString().let { binding.textPage1.text = it.toString()}
                     responce.data?.let {
                         //newsAdapter.differ.submitList(it.articles)
                         binding.textPage1.text = it.toString()
                     }
+                    binding.loading.visibility = View.INVISIBLE
                 }
                 is Resource.Error -> {
                     Log.e(TAG, " Resource.Error  ${responce.message.toString()}")
-                    binding.loading.visibility = View.INVISIBLE
+
                     Toast.makeText(requireContext(), responce.message, Toast.LENGTH_LONG).show()
 //                    responce.data?.let {
 //                        Log.e("checkData", "MainFragment: error: ${it}")
 //                    }
+                    binding.loading.visibility = View.INVISIBLE
                 }
                 is Resource.Loading -> {
-                    Log.e(TAG, " Resource.Loading  ${responce.message.toString()}")
+                    Log.e(TAG, " Resource.Loading  $responce")
                     binding.loading.visibility = View.VISIBLE
                 }
             }

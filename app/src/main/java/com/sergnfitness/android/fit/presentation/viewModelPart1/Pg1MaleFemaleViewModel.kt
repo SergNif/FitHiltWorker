@@ -126,8 +126,9 @@ class Pg1MaleFemaleViewModel @Inject constructor(
                 _userLiveData.postValue(null)
             }
             override fun onResponse(call: Call<User>, response: Response<User>) {
+                _userResourceLiveData.postValue(Resource.Loading(response))
                 Log.e(TAG, "Retrofit 2 ${response.body()?.id}")
-                if (response.isSuccessful) {
+                if (response.isSuccessful && response.body() != null) {
 
                     // получен ответ от сервера после записи данных
                     response.body().let { res ->

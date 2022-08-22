@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/maFemale1"
+        android:name="com.sergnfitness.android.fit.presentation.part1.Pg1MaleFemale"
+        android:label="fragment_ma_female1"
+        tools:layout="@layout/pg1_fragment_ma_female1" >
+        <action
+            android:id="@+id/action_maFemale1_to_next"
+            app:destination="@id/next" />
+    </fragment>
+    <fragment
+        android:id="@+id/next"
+        android:name="com.sergnfitness.android.fit.presentation.part1.Next"
+        android:label="pg2_next"
+        tools:layout="@layout/pg2_next" >
+        <action
+            android:id="@+id/action_next_to_dataAgeHightWeight"
+            app:destination="@id/dataAgeHightWeight" />
+    </fragment>
+    <fragment
+        android:id="@+id/dataAgeHightWeight"
+        android:name="com.sergnfitness.android.fit.presentation.part1.DataAgeHightWeight"
+        android:label="pg3_data_age_hight_weight"
+        tools:layout="@layout/pg3_data_age_hight_weight" >
+        <action
+            android:id="@+id/action_dataAgeHightWeight_to_maFemale1"
+            app:destination="@id/maFemale1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.sergnfitness.android.fit.presentation.login.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_maFemale1"
+            app:destination="@id/maFemale1" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.sergnfitness.android.fit.presentation.login.RegisterFragment"
+        android:label="RegisterFragment" >
+        <action
+            android:id="@+id/action_registerFragment_to_maFemale1"
+            app:destination="@id/maFemale1" />
+    </fragment>
+</navigation>

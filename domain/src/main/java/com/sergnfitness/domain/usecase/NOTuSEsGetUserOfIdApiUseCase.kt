@@ -1,6 +1,5 @@
 package com.sergnfitness.domain.usecase
 
-import android.util.Log
 import com.sergnfitness.domain.models.user.User
 import com.sergnfitness.domain.repository.ApiRepository
 import com.sergnfitness.domain.util.Resource
@@ -9,16 +8,16 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class GetCoinsUseCase @Inject constructor(
+class NOTuSEsGetUserOfIdApiUseCase @Inject constructor(
     private val repository: ApiRepository
 ){
-    operator fun invoke(): Flow<Resource<User>> = flow {
+    operator fun invoke(id:Int): Flow<Resource<User>> = flow {
         try {
             emit(Resource.Loading())
 
-            val coins = repository.getUser(id = 5)
+            val coins = repository.getUserOfIdRepos(id = id)
 
-            emit(Resource.Succes(coins.body()))
+//            emit(Resource.Success(coins.body()))
 
         } catch (e: IOException) {
             emit(Resource.Error("Couldn't reach server. Check your internet connection!"))

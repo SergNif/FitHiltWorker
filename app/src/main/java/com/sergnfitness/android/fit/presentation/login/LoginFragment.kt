@@ -2,6 +2,7 @@
 package com.sergnfitness.android.fit.presentation.login
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -46,7 +47,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
         if (!viewModel.isNewUser()) // значит юзер уже есть в базе, редирект на франменты
         {
-            findNavController().navigate(R.id.action_dataAgeHightWeight_to_maFemale1)
+            findNavController().navigate(R.id.action_loginFragment2_to_pg1MaleFemale1)
         }
 ////        viewModel.registrOrLogin.value = "login"
 ////        return binding.root
@@ -88,9 +89,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 //            binding.password.setText(it)
 //        })
 //
-//        binding.noAccountText.setOnClickListener {
-//            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-//        }
+        binding.noAccountText.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment2_to_registerFragment2)
+        }
 ////        viewModel.loginFormState.observe(viewLifecycleOwner,
 ////            Observer { loginFormState ->
 ////                if (loginFormState == null) {
@@ -104,7 +105,32 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 ////                    passwordEditText.error = getString(it)
 ////                }
 ////            })
-//        binding.loginBtn.setOnClickListener {
+        binding.loginBtn.setOnClickListener {
+            when {
+                TextUtils.isEmpty(binding.Email.text.toString().trim { it <= ' ' }) -> {
+                    Toast.makeText(
+                        activity,
+                        "Пожалуйста введите Email",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                TextUtils.isEmpty(binding.password.text.toString().trim { it <= ' ' }) -> {
+                    Toast.makeText(
+                        activity,
+                        "Пожалуйста введите Пароль",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {
+                    val emailQuery: String = binding.Email.text.toString().trim() { it <= ' ' }
+                    val passwQuery: String = binding.password.text.toString().trim() { it <= ' ' }
+//                    val fullNameUs: String = fullName.text.toString().trim() { it <= ' '}
+//                    textCreateAcc.text = fullNameUs
+                }
+            }
+        }
+    //        binding.loginBtn.setOnClickListener {
 //            when {
 //                TextUtils.isEmpty(binding.Email.text.toString().trim { it <= ' ' }) -> {
 //                    Toast.makeText(

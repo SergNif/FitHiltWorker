@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.sergnfitness.android.fit.R
 import com.sergnfitness.android.fit.databinding.Pg1FragmentMaFemale1Binding
@@ -14,6 +15,7 @@ import com.sergnfitness.android.fit.databinding.Pg1FragmentMaFemale1Binding
 import com.sergnfitness.android.fit.presentation.controlUI.ChangeFonButtonPage5
 import com.sergnfitness.android.fit.presentation.controlUI.ChangeFonButtonPage5NoPress
 import com.sergnfitness.android.fit.presentation.viewModelPart1.Pg1MaleFemaleViewModel
+import com.sergnfitness.domain.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -72,30 +74,31 @@ class Pg1MaleFemale : Fragment() {
 
 //        viewModel = ViewModelProvider(this, vmFactory)[Pg1MaleFemaleViewModel::class.java]
 
-        viewModel.resultLive.observe(viewLifecycleOwner) {
-            binding.textPage1.text = it
-            Log.e(TAG, " resultLive {${it}}")
-        }
+//        viewModel.resultLive.observe(viewLifecycleOwner) {
+//            binding.textPage1.text = it
+//            Log.e(TAG, " resultLive {${it}}")
+//        }
 //        viewModel.state.observe(viewLifecycleOwner){
 //            Log.e(TAG, "{${it.error}}")
 ////            binding.textPage1.text = it.coins
 //        }
 //
-        viewModel.newsLiveData.observe(viewLifecycleOwner){
-            Log.e(TAG, " newsLiveData {${it.message}}")
-//            binding.textPage1.text = it.message.toString()
-        }
-        viewModel.mm.observe(viewLifecycleOwner){
-            Log.e(TAG, " mm {${it}}")
-            binding.textPage1.text = it.toString()
-        }
+//        viewModel.userLiveData.observe(viewLifecycleOwner){
+//            Log.e(TAG, " newsLiveData {${it.toString()}}")
+//            binding.textPage1.text = it.toString()
+//        }
+//        viewModel.mm.observe(viewLifecycleOwner){
+//            Log.e(TAG, " mm {${it}}")
+//            binding.textPage1.text = it.toString()
+//        }
 
         binding.imageViewBoy.setOnClickListener {
 //            val textv = binding.editTextPage1.t ext
             viewModel.save(binding.editTextPage1.text.toString())
             binding.imageViewGirl.setBackgroundResource(changeFonButtonPage5.execute())
             binding.imageViewBoy.setBackgroundResource(changeFonButtonPage5NoPress.execute())
-            viewModel.getNews(5)
+//            viewModel.getuserOfIdApiViewModel(5)
+            viewModel.queryOfId(binding.editTextPage1.text.toString().toInt())
         }
 
         binding.imageViewGirl.setOnClickListener {
@@ -105,6 +108,35 @@ class Pg1MaleFemale : Fragment() {
             binding.imageViewBoy.setBackgroundResource(changeFonButtonPage5.execute())
             binding.imageViewGirl.setBackgroundResource(changeFonButtonPage5NoPress.execute())
         }
+
+
+        viewModel.userResourceLiveData.observe(viewLifecycleOwner) { responce ->
+            when(responce) {
+                is Resource.Success -> {
+                    Log.e(TAG, " Resource.Success  ${responce.data.toString()}")
+                    Log.e(TAG, " Resource.Success  ${responce.message.toString()}")
+                    binding.loading.visibility = View.INVISIBLE
+//                    viewModel.userLiveData.value.toString().let { binding.textPage1.text = it.toString()}
+                    responce.data?.let {
+                        //newsAdapter.differ.submitList(it.articles)
+                        binding.textPage1.text = it.toString()
+                    }
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, " Resource.Error  ${responce.message.toString()}")
+                    binding.loading.visibility = View.INVISIBLE
+                    Toast.makeText(requireContext(), responce.message, Toast.LENGTH_LONG).show()
+//                    responce.data?.let {
+//                        Log.e("checkData", "MainFragment: error: ${it}")
+//                    }
+                }
+                is Resource.Loading -> {
+                    Log.e(TAG, " Resource.Loading  ${responce.message.toString()}")
+                    binding.loading.visibility = View.VISIBLE
+                }
+            }
+        }
+
 
 
     }

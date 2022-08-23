@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.sergnfitness.android.fit.R
 import com.sergnfitness.android.fit.databinding.Pg1FragmentMaFemale1Binding
 
@@ -108,7 +109,9 @@ class Pg1MaleFemale : Fragment() {
             binding.imageViewBoy.setBackgroundResource(changeFonButtonPage5.execute())
             binding.imageViewGirl.setBackgroundResource(changeFonButtonPage5NoPress.execute())
         }
-
+    binding.image.setOnClickListener {
+        findNavController().navigate(R.id.action_pg1MaleFemale1_to_loginFragment2)
+    }
 
         viewModel.userResourceLiveData.observe(viewLifecycleOwner) { responce ->
             when(responce) {

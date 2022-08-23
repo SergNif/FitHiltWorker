@@ -1,16 +1,24 @@
 package com.sergnfitness.android.fit.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergnfitness.android.model.CoinListState
+import com.sergnfitness.data.api.ApiServer
+import com.sergnfitness.data.api.RetrofitInstance
 import com.sergnfitness.domain.models.user.User
 import com.sergnfitness.domain.usecase.*
 import com.sergnfitness.domain.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
+@HiltViewModel
 class LoginFragmentViewModel @Inject constructor(
     private val gGetUserOfEmailPasswordApiUseCase: GetUserOfEmailPasswordApiUseCase,
     private val getUserOfIdApiUseCase: GetUserOfIdApiUseCase,
@@ -24,34 +32,53 @@ class LoginFragmentViewModel @Inject constructor(
     private val _resultLive = MutableLiveData<String>()
     val resultLive: LiveData<String> = _resultLive
 
-    private val _state = MutableLiveData<CoinListState>()
-    val state: LiveData<CoinListState> = _state
+    private val _userLiveData = MutableLiveData<User?>()
+    val userLiveData: LiveData<User?> = _userLiveData
 
-    private val _mm = MutableLiveData<User>()
-    val mm: LiveData<User> = _mm
+    private val _userResourceLiveData = MutableLiveData<Resource<Any>>()
+    val userResourceLiveData: LiveData<Resource<Any>> = _userResourceLiveData
 
-    private val _newsLiveData = MutableLiveData<Resource<User>>()
-    val newsLiveData: LiveData<Resource<User>> = _newsLiveData
 
 
     fun isNewUser(): Boolean {
         return getUserSharedPreferenceUseCase.execute().id == 85000
     }
 
-    fun getuserOfEmailPasswordApiViewModel(emailQuery: String, passwQuery: String) =
-        viewModelScope.launch {
-            _newsLiveData.postValue(Resource.Loading())
-            val response = gGetUserOfEmailPasswordApiUseCase.invoke(emailQuery = emailQuery, passwQuery = passwQuery)
+    fun queryOfEmaiPassword(email:String, password:String) = viewModelScope.launch {
+        Log.e(TAG, "inside query")
 
-//            if (response.isSuccessful) {
-//                _mm.postValue(response.body()!!)
-//
-//                response.body().let { res ->
-//                    _newsLiveData.postValue(Resource.Success(res))
-//                }
-//            } else {
-//                _newsLiveData.postValue(Resource.Error(message = response.message()))
-//            }
-        }
+        safeCallGetUserOfEmailPasswordViewModel(email, password)
+    }
+    fun safeCallGetUserOfEmailPasswordViewModel(email:String, password:String) {
+        _userResourceLiveData.postValue(Resource.Loading())
+
+        val retroService = RetrofitInstance.getRetroInstance().create(ApiServer::class.java)
+        val call = retroService.getUserOfEmailPassword(emailQuery = email, passwQuery = password)
+        call.enqueue(object : Callback<User> {
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Log.e(TAG, "Retrofit 1")
+                _userResourceLiveData.postValue(Resource.Error(t.message.toString()))
+                _userLiveData.postValue(null)
+            }
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                _userResourceLiveData.postValue(Resource.Loading(response))
+                Log.e(TAG, "Retrofit 2 ${response.body()?.id}")
+                if (response.isSuccessful && response.body() != null) {
+
+                    // получен ответ от сервера после записи данных
+                    response.body().let { res ->
+                        _userLiveData.postValue(res)
+                        _userResourceLiveData.postValue(Resource.Success(res))
+                    }
+                } else {
+                    Log.e(TAG, "${response.message()} Retrofit 3")
+                    _userLiveData.postValue(null)
+                    _userResourceLiveData.postValue(Resource.Error("${response.message()} No this data"))
+                }
+            }
+        })
+
+
+    }
 
 }

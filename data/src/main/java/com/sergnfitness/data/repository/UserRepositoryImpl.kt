@@ -1,14 +1,15 @@
 package com.sergnfitness.cleanarchitect.data.repository
 
 
-import com.sergnfitness.cleanarchitect.data.storage.SharedPresInterfaceStorage
+import com.sergnfitness.cleanarchitect.data.storage.SharedPrefsInterfaceStorage
 
 import com.sergnfitness.data.storage.storageModel.UserStorage
 import com.sergnfitness.domain.models.user.User
 import com.sergnfitness.domain.repository.UserRepository
+import javax.inject.Inject
 
 
-class UserRepositoryImpl(private val sharedPresInterfaceStorage: SharedPresInterfaceStorage) :
+class UserRepositoryImpl @Inject constructor(private val sharedPrefsInterfaceStorage: SharedPrefsInterfaceStorage) :
     UserRepository {
 
 //
@@ -20,13 +21,13 @@ class UserRepositoryImpl(private val sharedPresInterfaceStorage: SharedPresInter
 
     override fun saveUser(saveParam: User): Boolean {
         val user: UserStorage = mapUserToStorage(saveParam)
-        val result = sharedPresInterfaceStorage.saveUser(user)
+        val result = sharedPrefsInterfaceStorage.saveUser(user)
         return result
     }
 
     override fun getUser(): User {
 //        val user: User = mapUserToDomain(getParam)
-        val user = sharedPresInterfaceStorage.getUser()
+        val user = sharedPrefsInterfaceStorage.getUser()
         return mapUserToDomain(getParam = user)
     }
 

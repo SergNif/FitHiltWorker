@@ -43,6 +43,7 @@ class Pg1MaleFemale : Fragment() {
 
 //    lateinit var vmFactory: Pg1MaleFemaleViewModelFactory
 //    lateinit var viewModel: Pg1MaleFemaleViewModel
+
     private val viewModel: Pg1MaleFemaleViewModel by viewModels()
 
 //    lateinit var viewModelFactory: Pg1MaleFemaleViewModelFactory

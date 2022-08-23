@@ -8,8 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergnfitness.android.model.CoinListState
 import com.sergnfitness.data.api.ApiServer
-import com.sergnfitness.data.api.RetrofitInstance
+import com.sergnfitness.data.api.RetrofitInstanceModule
 import com.sergnfitness.domain.models.user.User
+import com.sergnfitness.domain.repository.ApiRepository
 
 import com.sergnfitness.domain.usecase.GetUserOfIdApiUseCase
 import com.sergnfitness.domain.usecase.GetUserSharedPreferenceUseCase
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class Pg1MaleFemaleViewModel @Inject constructor(
     private val getUserOfIdApiUseCase: GetUserOfIdApiUseCase,
+    private val apiRepository: ApiRepository,
 //    private val NOTuSEsGetUserOfIdApiUseCase: NOTuSEsGetUserOfIdApiUseCase,
     private val getUserSharedPreferenceUseCase: GetUserSharedPreferenceUseCase,
     private val saveUserSharedPreferenceUseCase: SaveUserSharedPreferenceUseCase,
@@ -85,11 +87,11 @@ class Pg1MaleFemaleViewModel @Inject constructor(
 
         safeCallGetUserOfEmailPasswordViewModel(email, password)
     }
-    suspend fun safeCallGetUserOfEmailPasswordViewModel(email:String, password:String) {
+    private suspend fun safeCallGetUserOfEmailPasswordViewModel(email:String, password:String) {
 //        _newsLiveData.postValue(Resource.Loading())
 
-        val retroService = RetrofitInstance.getRetroInstance().create(ApiServer::class.java)
-        val call = retroService.getUserOfEmailPassword(emailQuery = email, passwQuery = password)
+//        val retroService = RetrofitInstanceModule.getRetroInstance().create(ApiServer::class.java)
+        val call = apiRepository.getUserOfEmailPasswordRepos(emailQuery = email, passwQuery = password)
         call.enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>, t: Throwable) {
                 Log.e(TAG, "Retrofit 1")
@@ -117,8 +119,8 @@ class Pg1MaleFemaleViewModel @Inject constructor(
     suspend fun safeCallGetUserOfId(id:Int) {
         _userResourceLiveData.postValue(Resource.Loading())
         Log.e(TAG, "Retrofit 0")
-        val retroService = RetrofitInstance.getRetroInstance().create(ApiServer::class.java)
-        val call = retroService.getUserOfId(id = id)
+//        val retroService = RetrofitInstanceModule.getRetroInstance().create(ApiServer::class.java)
+        val call = apiRepository.getUserOfIdRepos(id = id)
         call.enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>, t: Throwable) {
                 Log.e(TAG, "Retrofit 1")

@@ -2,7 +2,7 @@ package com.sergnfitness.android.fit.di
 
 import android.content.Context
 import com.sergnfitness.cleanarchitect.data.repository.UserRepositoryImpl
-import com.sergnfitness.cleanarchitect.data.storage.SharedPresImplStorage
+import com.sergnfitness.cleanarchitect.data.storage.SharedPrefsImplStorage
 import com.sergnfitness.domain.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -17,14 +17,14 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideSharedPresImplStorage(@ApplicationContext context: Context): SharedPresImplStorage {
-        return SharedPresImplStorage(context = context)
+    fun provideSharedPresImplStorage(@ApplicationContext context: Context): SharedPrefsImplStorage {
+        return SharedPrefsImplStorage(context = context)
     }
 
     @Provides
     @Singleton
-    fun provideUserRepository(sharedPresInterfaceStorage: SharedPresImplStorage): UserRepository {
-        return UserRepositoryImpl(sharedPresInterfaceStorage = sharedPresInterfaceStorage)
+    fun provideUserRepository(sharedPresInterfaceStorage: SharedPrefsImplStorage): UserRepository {
+        return UserRepositoryImpl(sharedPrefsInterfaceStorage = sharedPresInterfaceStorage )
     }
 
 

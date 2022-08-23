@@ -5,10 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergnfitness.android.model.CoinListState
 import com.sergnfitness.data.api.ApiServer
-import com.sergnfitness.data.api.RetrofitInstance
+import com.sergnfitness.data.api.RetrofitInstanceModule
 import com.sergnfitness.domain.models.user.User
+import com.sergnfitness.domain.repository.ApiRepository
 import com.sergnfitness.domain.usecase.*
 import com.sergnfitness.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class LoginFragmentViewModel @Inject constructor(
     private val gGetUserOfEmailPasswordApiUseCase: GetUserOfEmailPasswordApiUseCase,
     private val getUserOfIdApiUseCase: GetUserOfIdApiUseCase,
-//    private val NOTuSEsGetUserOfIdApiUseCase: NOTuSEsGetUserOfIdApiUseCase,
+    private val apiRepository: ApiRepository,
     private val getUserSharedPreferenceUseCase: GetUserSharedPreferenceUseCase,
     private val saveUserSharedPreferenceUseCase: SaveUserSharedPreferenceUseCase,
 ) : ViewModel() {
@@ -39,27 +39,28 @@ class LoginFragmentViewModel @Inject constructor(
     val userResourceLiveData: LiveData<Resource<Any>> = _userResourceLiveData
 
 
-
     fun isNewUser(): Boolean {
         return getUserSharedPreferenceUseCase.execute().id == 85000
     }
 
-    fun queryOfEmaiPassword(email:String, password:String) = viewModelScope.launch {
+    fun queryOfEmaiPassword(email: String, password: String) = viewModelScope.launch {
         Log.e(TAG, "inside query")
 
         safeCallGetUserOfEmailPasswordViewModel(email, password)
     }
-    fun safeCallGetUserOfEmailPasswordViewModel(email:String, password:String) {
+
+    suspend fun safeCallGetUserOfEmailPasswordViewModel(email: String, password: String) {
         _userResourceLiveData.postValue(Resource.Loading())
 
-        val retroService = RetrofitInstance.getRetroInstance().create(ApiServer::class.java)
-        val call = retroService.getUserOfEmailPassword(emailQuery = email, passwQuery = password)
+//        val retroService = RetrofitInstanceModule.getRetroInstance().create(ApiServer::class.java)
+        val call =  apiRepository.getUserOfEmailPasswordRepos(emailQuery = email, passwQuery = password)
         call.enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>, t: Throwable) {
                 Log.e(TAG, "Retrofit 1")
                 _userResourceLiveData.postValue(Resource.Error(t.message.toString()))
                 _userLiveData.postValue(null)
             }
+
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 _userResourceLiveData.postValue(Resource.Loading(response))
                 Log.e(TAG, "Retrofit 2 ${response.body()?.id}")

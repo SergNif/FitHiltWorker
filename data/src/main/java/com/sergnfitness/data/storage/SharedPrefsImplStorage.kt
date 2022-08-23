@@ -20,7 +20,7 @@ private const val DEFAULT_LAST_NAME = "Default last name"
 private const val DEFAULT_FIRST_NAME = "Default first name"
 
 
-class SharedPresImplStorage(context: Context): SharedPresInterfaceStorage {
+class SharedPrefsImplStorage(context: Context): SharedPrefsInterfaceStorage {
 
     private val sharedPreferences =
         context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)

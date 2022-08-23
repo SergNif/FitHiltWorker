@@ -75,19 +75,19 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 else -> {
                     emailQuery = binding.Email.text.toString().trim() { it <= ' ' }
                     passwQuery = binding.password.text.toString().trim() { it <= ' ' }
-                    viewModel.queryOfEmaiPassword(email = emailQuery, password =  passwQuery)
+                    viewModel.queryOfEmaiPassword(email = emailQuery, password = passwQuery)
                 }
             }
         }
 
         viewModel.userResourceLiveData.observe(viewLifecycleOwner) { responce ->
-            when(responce) {
+            when (responce) {
                 is Resource.Success -> {
                     Log.e(TAG, " Resource.Success  ${responce.data.toString()}")
 
                     responce.data?.let {
-                        if (it is User){
-                            if (it.email.toString() == emailQuery && it.password.toString() == passwQuery){
+                        if (it is User) {
+                            if (it.email.toString() == emailQuery && it.password.toString() == passwQuery) {
                                 findNavController().navigate(R.id.action_loginFragment2_to_pg1MaleFemale1)
                             }
                             Log.e(TAG, "response is User")

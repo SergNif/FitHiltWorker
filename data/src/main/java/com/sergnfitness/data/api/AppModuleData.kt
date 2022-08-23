@@ -1,6 +1,7 @@
 package com.sergnfitness.data.api
 
 
+import android.app.Application
 import com.sergnfitness.data.repository.ApiRepositoryImpl
 import com.sergnfitness.domain.repository.ApiRepository
 import com.sergnfitness.domain.util.Constants.BASE_URL
@@ -19,30 +20,30 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModuleData {
 
-    @Provides
-    fun logging() = HttpLoggingInterceptor()
-        .setLevel(HttpLoggingInterceptor.Level.BODY)
-
-    @Provides
-    fun okHttpClient() = OkHttpClient.Builder()
-        .addInterceptor(logging())
-        .build()
-
-    @Provides
-    @Singleton
-    fun providePaprikaApi(): ApiServer {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient())
-            .build()
-            .create(ApiServer::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideApiRepository(api: ApiServer): ApiRepository{
-        return ApiRepositoryImpl(api)
-    }
+//    @Provides
+//    fun logging() = HttpLoggingInterceptor()
+//        .setLevel(HttpLoggingInterceptor.Level.BODY)
+//
+//    @Provides
+//    fun okHttpClient() = OkHttpClient.Builder()
+//        .addInterceptor(logging())
+//        .build()
+//
+//    @Provides
+//    @Singleton
+//    fun providePaprikaApi(): ApiServer {
+//        return Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .client(okHttpClient())
+//            .build()
+//            .create(ApiServer::class.java)
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideApiRepository(api: ApiServer, app: Application): ApiRepository{
+//        return ApiRepositoryImpl(api, app)
+//    }
 
 }

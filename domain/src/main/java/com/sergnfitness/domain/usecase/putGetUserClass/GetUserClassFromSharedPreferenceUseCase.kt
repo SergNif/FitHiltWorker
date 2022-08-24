@@ -2,8 +2,9 @@ package com.sergnfitness.domain.usecase.putGetUserClass
 
 import com.sergnfitness.domain.models.user.User
 import com.sergnfitness.domain.repository.UserRepository
+import javax.inject.Inject
 
-class GetUserClassFromSharedPreferenceUseCase(
+class GetUserClassFromSharedPreferenceUseCase @Inject constructor(
     private val userRepository: UserRepository,
 ) {
     val TAG = "GetUserClassFromSharedPreferenceUseCase"

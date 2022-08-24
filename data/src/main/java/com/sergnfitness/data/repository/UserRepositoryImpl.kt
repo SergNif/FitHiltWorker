@@ -1,18 +1,26 @@
 package com.sergnfitness.cleanarchitect.data.repository
 
 
+import android.app.Application
+import android.util.Log
 import com.sergnfitness.cleanarchitect.data.storage.SharedPrefsInterfaceStorage
-
 import com.sergnfitness.data.storage.storageModel.UserStorage
 import com.sergnfitness.domain.models.user.User
 import com.sergnfitness.domain.repository.UserRepository
 import javax.inject.Inject
 
 
-class UserRepositoryImpl @Inject constructor(private val sharedPrefsInterfaceStorage: SharedPrefsInterfaceStorage) :
+class UserRepositoryImpl @Inject constructor(
+    private val sharedPrefsInterfaceStorage: SharedPrefsInterfaceStorage,
+//    appContext: Application
+    ) :
     UserRepository {
 
-//
+    init{
+        val appName = "testttttt********"//appContext.getString(androidx.core.R.string.status_bar_notification_info_overflow)
+        Log.e("UserRepositoryImpl", "Heloo from ApiRepositoryImpl $appName")
+    }
+
 //    override fun saveName(saveparam: SaveUserNameParam): Boolean {
 //        val user: UserModelStorage = mapToStorage(saveparam)
 //        val result = sharedPresInterfaceStorage.save(user)

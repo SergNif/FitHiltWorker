@@ -2,6 +2,10 @@ package com.sergnfitness.cleanarchitect.data.storage
 
 import android.content.Context
 import com.sergnfitness.data.storage.storageModel.UserStorage
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Inject
 
 
 private const val SHARED_PREFS_NAME = "shared_prefs_name"
@@ -22,7 +26,9 @@ private const val DEFAULT_LAST_NAME = "Default last name"
 private const val DEFAULT_FIRST_NAME = "Default first name"
 
 
-class SharedPrefsImplStorage(context: Context) : SharedPrefsInterfaceStorage {
+//@Module
+//@InstallIn(SingletonComponent::class)
+class SharedPrefsImplStorage @Inject constructor(context: Context) : SharedPrefsInterfaceStorage {
 
     private val sharedPreferences =
         context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)

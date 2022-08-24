@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ApiRepositoryImpl @Inject constructor(
     private val api: ApiServer,
-    private val appContext: Application
+    appContext: Application
     ) : ApiRepository {
 
     init{

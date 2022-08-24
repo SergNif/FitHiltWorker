@@ -60,7 +60,7 @@ data class DataUserStorage(
     var fastSugar: Boolean = false,
     var Nothing: Boolean = false,
 
-    var fitness_id: Int? = null
+    var fitness_id: Int? = null,
 )
 
 fun DataUserStorage.toDataUser(): DataUser {
@@ -124,5 +124,24 @@ fun DataUserStorage.toDataUser(): DataUser {
         fitness_id = fitness_id,
 
         )
+}
+
+fun DataUserStorage.fromSharedPrefs(list: MutableList<String>): DataUserStorage {
+    var us = this
+    var count = 0
+    this::class.java.declaredFields.forEach() { member ->
+        var type = member.name.javaClass.name
+        when (type) {
+            "java.lang.String" -> us.javaClass.getDeclaredField(member.name).let { list.get(count) }
+            "java.lang.Boolean" -> us.javaClass.getDeclaredField(member.name)
+                .let { list.get(count).toBoolean() }
+            "java.lang.Int" -> us.javaClass.getDeclaredField(member.name)
+                .let { list.get(count).toInt() }
+            else -> {us.javaClass.getDeclaredField(member.name)
+                .let { "" }}
+        }
+        count = count + 1
+    }
+    return us
 }
 

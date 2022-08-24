@@ -31,6 +31,17 @@ class UserRepositoryImpl @Inject constructor(private val sharedPrefsInterfaceSto
         return mapUserToDomain(getParam = user)
     }
 
+    override fun saveDataUser(user: User): Boolean {
+        val userStorage: UserStorage = mapUserToStorage(user)
+        val result = sharedPrefsInterfaceStorage.saveDataUser(userStorage)
+        return result
+    }
+
+    override fun getDataUser(): MutableList<String> {
+
+        return sharedPrefsInterfaceStorage.getDataUser()
+    }
+
 //    override fun getUserSharedPref(): User {
 //        val user = sharedPresInterfaceStorage.getUserModelStor()
 //        return mapToDomain(user)

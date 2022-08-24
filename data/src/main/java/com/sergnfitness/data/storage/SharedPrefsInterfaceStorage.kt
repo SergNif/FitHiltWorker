@@ -9,4 +9,7 @@ interface SharedPrefsInterfaceStorage {
 //    fun getIdUser():Int
     fun saveUser(user: UserStorage):Boolean
     fun getUser(): UserStorage
+
+    fun saveDataUser(user: UserStorage):Boolean
+    fun getDataUser(): MutableList<String>
 }

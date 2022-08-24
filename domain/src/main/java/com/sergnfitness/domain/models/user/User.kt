@@ -10,3 +10,4 @@ data class User (
     var password: String? = null,
     var fitness_id: Int? = null,
 )
+

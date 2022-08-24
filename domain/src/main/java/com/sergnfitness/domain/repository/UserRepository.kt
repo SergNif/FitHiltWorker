@@ -9,4 +9,7 @@ interface UserRepository {
 //    fun getId(): Int
     fun saveUser(saveParam: User):Boolean
     fun getUser():User
+
+    fun saveDataUser(user: User):Boolean
+    fun getDataUser(): MutableList<String>
 }

@@ -12,11 +12,12 @@ import javax.inject.Inject
 
 class ApiRepositoryImpl @Inject constructor(
     private val api: ApiServer,
-    appContext: Application
-    ) : ApiRepository {
+    appContext: Application,
+) : ApiRepository {
 
-    init{
-        val appName = appContext.getString(androidx.core.R.string.status_bar_notification_info_overflow)
+    init {
+        val appName =
+            appContext.getString(androidx.core.R.string.status_bar_notification_info_overflow)
         Log.e("ApiRepositoryImpl", "Heloo from ApiRepositoryImpl $appName")
     }
 
@@ -24,8 +25,19 @@ class ApiRepositoryImpl @Inject constructor(
         return api.getUserOfId(id = id)//, emailQuery = email, passwQuery = password) //.body().toUser()
     }
 
-    override suspend fun getUserOfEmailPasswordRepos(emailQuery:String, passwQuery:String) : Call<User> {
-        return api.getUserOfEmailPassword(emailQuery = emailQuery, passwQuery = passwQuery)//, emailQuery = email, passwQuery = password) //.body().toUser()
+    override suspend fun getUserOfEmailPasswordRepos(
+        emailQuery: String,
+        passwQuery: String,
+    ): Call<User> {
+        return api.getUserOfEmailPassword(emailQuery = emailQuery,
+            passwQuery = passwQuery)//, emailQuery = email, passwQuery = password) //.body().toUser()
+    }
+
+
+    override suspend fun saveNewUserOfEmailPasswordRepos(
+        user: User,
+    ): Call<User> {
+        return api.saveNewUserOfEmailPassword(user)//, emailQuery = email, passwQuery = password) //.body().toUser()
     }
 
 

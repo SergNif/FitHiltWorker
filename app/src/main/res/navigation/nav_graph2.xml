@@ -18,7 +18,11 @@
     <fragment
         android:id="@+id/registerFragment2"
         android:name="com.sergnfitness.android.fit.presentation.login.RegisterFragment"
-        android:label="RegisterFragment" />
+        android:label="RegisterFragment" >
+        <action
+            android:id="@+id/action_registerFragment2_to_pg1MaleFemale1"
+            app:destination="@id/pg1MaleFemale1" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment2"
         android:name="com.sergnfitness.android.fit.presentation.login.LoginFragment"

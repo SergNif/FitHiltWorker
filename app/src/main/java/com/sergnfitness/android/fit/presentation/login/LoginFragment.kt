@@ -41,9 +41,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         emailEditText.isPressed = true
         emailEditText.setClickable(true)
         emailEditText.isClickable = true
-        view.setOnClickListener {
-            Toast.makeText(context, "Welcome page 1", Toast.LENGTH_SHORT).show()
-        }
+//        view.setOnClickListener {
+//            Toast.makeText(context, "Welcome page 1", Toast.LENGTH_SHORT).show()
+//        }
 
 
         val passwordEditText = binding.password
@@ -56,7 +56,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
 
         binding.loginBtn.setOnClickListener {
-            when {
+            when {  //если поле email или password пустое, то ничего не делать
                 TextUtils.isEmpty(binding.Email.text.toString().trim { it <= ' ' }) -> {
                     Toast.makeText(
                         activity,
@@ -72,7 +72,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                else -> {
+                else -> { // если поле email или password не пустое, то запрашивается на сервере эти поля
                     emailQuery = binding.Email.text.toString().trim() { it <= ' ' }
                     passwQuery = binding.password.text.toString().trim() { it <= ' ' }
                     viewModel.queryOfEmaiPassword(email = emailQuery, password = passwQuery)
@@ -82,20 +82,22 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         viewModel.userResourceLiveData.observe(viewLifecycleOwner) { responce ->
             when (responce) {
-                is Resource.Success -> {
+                is Resource.Success -> { // пришел хороший ответ
                     Log.e(TAG, " Resource.Success  ${responce.data.toString()}")
 
                     responce.data?.let {
-                        if (it is User) {
+                        if (it is User) { // сравниваются оля email и password в активити с базой на сервере
                             if (it.email.toString() == emailQuery && it.password.toString() == passwQuery) {
+                                viewModel.saveUserToSharedPref(it)
                                 findNavController().navigate(R.id.action_loginFragment2_to_pg1MaleFemale1)
+                                // при совпадении почты и пароля -> переход на следующий фрагмент
                             }
                             Log.e(TAG, "response is User")
                         }
                     }
                     binding.loading.visibility = View.INVISIBLE
                 }
-                is Resource.Error -> {
+                is Resource.Error -> {  // при запросе на сервер пришла ошибка
                     Log.e(TAG, " Resource.Error  ${responce.message.toString()}")
 
                     Toast.makeText(requireContext(), responce.message, Toast.LENGTH_LONG).show()

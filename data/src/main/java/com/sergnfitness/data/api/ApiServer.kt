@@ -1,13 +1,12 @@
 package com.sergnfitness.data.api
 
 
+import com.sergnfitness.data.storage.storageModel.DataUserStorage
 import com.sergnfitness.data.storage.storageModel.UserStorage
 import com.sergnfitness.domain.models.user.User
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 
 interface ApiServer {
@@ -19,6 +18,12 @@ interface ApiServer {
 ////        @Query("passwQuery")
 ////        passwQuery: String,
 //    ): Response<User>
+
+    @POST("new_user/")
+    fun saveNewUserOfEmailPassword(
+        @Body params: User
+        ): Call<User>
+
 
     @GET("/get_one_user/{user_id}")
     fun getUserOfId(

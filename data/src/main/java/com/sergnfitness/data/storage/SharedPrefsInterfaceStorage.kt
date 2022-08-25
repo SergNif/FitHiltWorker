@@ -1,5 +1,6 @@
 package com.sergnfitness.cleanarchitect.data.storage
 
+import com.sergnfitness.data.storage.storageModel.DataUserStorage
 import com.sergnfitness.data.storage.storageModel.UserStorage
 
 
@@ -10,6 +11,10 @@ interface SharedPrefsInterfaceStorage {
     fun saveUser(user: UserStorage):Boolean
     fun getUser(): UserStorage
 
-    fun saveDataUser(user: UserStorage):Boolean
-    fun getDataUser(): MutableList<String>
+    fun saveUserClass(user: UserStorage):Boolean
+    fun getUserClass(): MutableList<String>
+
+
+    fun saveDataUserClass(user: DataUserStorage):Boolean
+    fun getDataUserClass(): MutableList<String>
 }

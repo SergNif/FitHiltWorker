@@ -2,29 +2,36 @@ package com.sergnfitness.android.fit.presentation.login
 
 import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.sergnfitness.android.fit.R
 import com.sergnfitness.android.fit.databinding.FragmentRegisterBinding
+import com.sergnfitness.domain.models.user.User
+import com.sergnfitness.domain.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
     //    lateinit var sharedPrefUserStorage: SharedPrefUserStorage
 //    lateinit var viewModel: MainViewModel
-    private val viewModel: RegisterFragmentViewModel by viewModels()
+
     val TAG = "Fragment Registr"
 
     private lateinit var binding: FragmentRegisterBinding
-//    private lateinit var database: DatabaseReference
+
+    //    private lateinit var database: DatabaseReference
+    private val viewModel: RegisterFragmentViewModel by viewModels<RegisterFragmentViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
@@ -36,12 +43,12 @@ class RegisterFragment : Fragment() {
         binding = FragmentRegisterBinding.bind(view)
 
 //        viewModel.registrOrLogin.value = "registr"
-//        val fullNameEditText = binding.fullName
-//        val emailEditText = binding.Email
-//        val passwordEditText = binding.password
-//        val registrButton = binding.registerBtn
-//        val backToLogin = binding.toLogin
-//
+        val fullNameEditText = binding.fullName
+        val emailEditText = binding.Email
+        val passwordEditText = binding.password
+        val registrButton = binding.registerBtn
+        val backToLogin = binding.toLogin
+
 //        viewModel.livefullNameEmailRegister.observe(viewLifecycleOwner, Observer { it ->
 //            binding.fullName.setText(it)
 //        })
@@ -53,33 +60,74 @@ class RegisterFragment : Fragment() {
 //            binding.password.setText(it)
 //        })
 //
-//        binding.registerBtn.setOnClickListener {
-//            when {
-//                TextUtils.isEmpty(binding.Email.text.toString().trim { it <= ' ' }) -> {
-//                    Toast.makeText(
-//                        activity,
-//                        "Пожалуйста введите Email",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
+        binding.registerBtn.setOnClickListener {
+            when {
+                TextUtils.isEmpty(binding.Email.text.toString().trim { it <= ' ' }) -> {
+                    Toast.makeText(
+                        activity,
+                        "Пожалуйста введите Email",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                TextUtils.isEmpty(binding.password.text.toString().trim { it <= ' ' }) -> {
+                    Toast.makeText(
+                        activity,
+                        "Пожалуйста введите Пароль",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                TextUtils.isEmpty(binding.fullName.text.toString().trim { it <= ' ' }) -> {
+                    Toast.makeText(
+                        activity,
+                        "Как к Вам обращаться? Имя.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 //
-//                TextUtils.isEmpty(binding.password.text.toString().trim { it <= ' ' }) -> {
-//                    Toast.makeText(
-//                        activity,
-//                        "Пожалуйста введите Пароль",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//
-//                TextUtils.isEmpty(binding.fullName.text.toString().trim { it <= ' ' }) -> {
-//                    Toast.makeText(
-//                        activity,
-//                        "Как к Вам обращаться? Имя.",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//
-//                else -> {
+                else -> {
+                    val fullNameQuery = binding.fullName.text.toString().trim() { it <= ' ' }
+                    val emailQuery = binding.Email.text.toString().trim() { it <= ' ' }
+                    val passwQuery = binding.password.text.toString().trim() { it <= ' ' }
+                    viewModel.registerUserOfEmaiPassword(fullName = fullNameQuery,
+                        email = emailQuery,
+                        password = passwQuery)
+                }
+            }
+        }
+
+
+        viewModel.userResourceLiveData.observe(viewLifecycleOwner) { responce ->
+            when (responce) {
+
+
+                is Resource.Success -> { // пришел хороший ответ
+                    Log.e(TAG, " Resource.Success  ${responce.data.toString()}")
+
+                    responce.data?.let {
+                        if (it is User) { // сравниваются оля email и password в активити с базой на сервере
+                            viewModel.saveUserToSharedPref(it)
+                            findNavController().navigate(R.id.action_registerFragment2_to_pg1MaleFemale1)
+                            // при совпадении почты и пароля -> переход на следующий фрагмент
+                        }
+                        Log.e(TAG, "response is User")
+                    }
+                    binding.loading.visibility = View.INVISIBLE
+                }
+
+                is Resource.Error -> {  // при запросе на сервер пришла ошибка
+                    Log.e(TAG, " Resource.Error  ${responce.message.toString()}")
+
+                    Toast.makeText(requireContext(), responce.message, Toast.LENGTH_LONG).show()
+                    binding.loading.visibility = View.INVISIBLE
+                }
+                is Resource.Loading -> {
+                    Log.e(TAG, " Resource.Loading  $responce")
+                    binding.loading.visibility = View.VISIBLE
+                }
+            }
+        }
 //                    val emailFB: String = binding.Email.text.toString().trim() { it <= ' ' }
 //                    val passwordFB: String = binding.password.text.toString().trim() { it <= ' ' }
 //                    val fullName = binding.fullName.text.toString().trim() { it <= ' ' }

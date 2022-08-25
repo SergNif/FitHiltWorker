@@ -8,4 +8,5 @@ import retrofit2.Response
 interface ApiRepository {
     suspend fun getUserOfIdRepos(id:Int) : Call<User>
     suspend fun getUserOfEmailPasswordRepos(emailQuery:String, passwQuery:String) : Call<User>
+    suspend fun saveNewUserOfEmailPasswordRepos(user: User) : Call<User>
 }

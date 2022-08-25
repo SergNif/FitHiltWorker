@@ -9,6 +9,7 @@ import com.sergnfitness.data.api.ApiServer
 import com.sergnfitness.data.api.RetrofitInstanceModule
 import com.sergnfitness.domain.models.user.User
 import com.sergnfitness.domain.repository.ApiRepository
+import com.sergnfitness.domain.repository.UserRepository
 import com.sergnfitness.domain.usecase.*
 import com.sergnfitness.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,7 @@ class LoginFragmentViewModel @Inject constructor(
     private val gGetUserOfEmailPasswordApiUseCase: GetUserOfEmailPasswordApiUseCase,
     private val getUserOfIdApiUseCase: GetUserOfIdApiUseCase,
     private val apiRepository: ApiRepository,
+    private val userRepository: UserRepository,
     private val getUserSharedPreferenceUseCase: GetUserSharedPreferenceUseCase,
     private val saveUserSharedPreferenceUseCase: SaveUserSharedPreferenceUseCase,
 ) : ViewModel() {
@@ -82,4 +84,7 @@ class LoginFragmentViewModel @Inject constructor(
 
     }
 
+    fun saveUserToSharedPref(it: User) {
+        userRepository.saveDataUser(it)
+    }
 }

@@ -1,6 +1,7 @@
 package com.sergnfitness.cleanarchitect.data.storage
 
 import android.content.Context
+import com.sergnfitness.data.storage.storageModel.DataUserStorage
 import com.sergnfitness.data.storage.storageModel.UserStorage
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,18 +34,6 @@ class SharedPrefsImplStorage @Inject constructor(context: Context) : SharedPrefs
     private val sharedPreferences =
         context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
 
-//    override fun save(userModelStorage: UserModelStorage): Boolean {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun getUserModelStor(): UserModelStorage {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun getIdUser(): Int {
-//        TODO("Not yet implemented")
-//    }
-
     override fun saveUser(user: UserStorage): Boolean {
         user.id?.let { sharedPreferences.edit().putInt(KEY_USER_ID, it).apply() }
         sharedPreferences.edit().putString(KEY_USER_FULLNAME, user.fullName.toString()).apply()
@@ -71,7 +60,7 @@ class SharedPrefsImplStorage @Inject constructor(context: Context) : SharedPrefs
     }
 
 
-    override fun saveDataUser(user: UserStorage): Boolean {
+    override fun saveUserClass(user: UserStorage): Boolean {
         // user.javaClass.simpleName - выдаёт имя класса user
         for (jj in user.javaClass.declaredFields) {
 
@@ -80,11 +69,10 @@ class SharedPrefsImplStorage @Inject constructor(context: Context) : SharedPrefs
             }
             println(jj.name)
         }
-
         return true
     }
 
-    override fun getDataUser(): MutableList<String> {
+    override fun getUserClass(): MutableList<String> {
 
         lateinit var list: MutableList<String>
         UserStorage::class.java.declaredFields.forEach() { member ->
@@ -93,8 +81,27 @@ class SharedPrefsImplStorage @Inject constructor(context: Context) : SharedPrefs
             println("${member.name}")
         }
         return list
-
     }
 
+    override fun saveDataUserClass(user: DataUserStorage): Boolean {
+        // user.javaClass.simpleName - выдаёт имя класса user
+        for (jj in user.javaClass.declaredFields) {
 
+            user.javaClass.getDeclaredField(jj.name).let {
+                sharedPreferences.edit().putString(jj.name.toString(), jj.toString()).apply()
+            }
+            println(jj.name)
+        }
+        return true
+    }
+
+    override fun getDataUserClass(): MutableList<String> {
+        lateinit var list: MutableList<String>
+        DataUserStorage::class.java.declaredFields.forEach() { member ->
+//            user.javaClass.getDeclaredField(member.name)
+            list.add(sharedPreferences.getString(member.name, DEFAULT_CURRENT) ?: DEFAULT_CURRENT)
+            println("${member.name}")
+        }
+        return list
+    }
 }

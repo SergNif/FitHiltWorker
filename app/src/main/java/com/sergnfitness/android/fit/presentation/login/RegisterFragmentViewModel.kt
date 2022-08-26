@@ -39,11 +39,13 @@ class RegisterFragmentViewModel @Inject constructor(
     fun registerUserOfEmaiPassword(fullName: String, email: String, password: String) =
         viewModelScope.launch {
             Log.e(TAG, "inside query")
-            val listTagged: MutableList<String> = mutableListOf()
-            var user = userRepository.createExemplarClassUserUseRepos(listTagged)
-            user.fullName = fullName
-            user.email = email
-            user.password = password
+//            val listTagged: MutableList<String> = mutableListOf()
+            val listTagged = mutableMapOf(fullName to fullName, email to email, password to password)
+            var user = userRepository.createExemplarClassUserUseRepos(nameOfCreateClass = "com.sergnfitness.domain.models.user.User", list =  listTagged) as User
+//
+//            user.fullName = fullName
+//            user.email = email
+//            user.password = password
             safeCallRegisterNewUserOfEmailPasswordViewModel(user)
         }
 

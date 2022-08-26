@@ -8,6 +8,8 @@ import com.sergnfitness.domain.models.user.DataUser
 import com.sergnfitness.domain.models.user.User
 import com.sergnfitness.domain.repository.UserRepository
 import javax.inject.Inject
+import kotlin.jvm.internal.Reflection
+import kotlin.reflect.KClass
 
 
 class UserRepositoryImpl @Inject constructor(
@@ -51,39 +53,51 @@ class UserRepositoryImpl @Inject constructor(
         return sharedPrefsInterfaceStorage.getUserClass()
     }
 
-    override fun createExemplarClassDataUserStorageUseRepos(list: MutableList<String>): DataUser {
-        var us = DataUser()
-        var count = 0
-        DataUser::class.java.declaredFields.forEach() { member ->
-            var type = member.name.javaClass.name
-            when (type) {
-                "java.lang.String" -> {
-                    list.add(count, "")
-                    us.javaClass.getDeclaredField(member.name).let { list.get(count) ?: "" }
-                }
-                "java.lang.Boolean" -> {
-                    list.add(count, false.toString())
-                    us.javaClass.getDeclaredField(member.name)
-                        .let { list.get(count).toBoolean() ?: false }
-                }
-                "java.lang.Int" -> {
-                    list.add(count, "0")
-                    us.javaClass.getDeclaredField(member.name).let { list.get(count).toInt() ?: 0 }
-                }
-                else -> {
-                    list.add(count, "")
-                    us.javaClass.getDeclaredField(member.name).let { "" }
-                }
-            }
-            count = count + 1
-        }
-        return us
-    }
+//    override fun createExemplarClassDataUserStorageUseRepos(list: MutableList<String>): DataUser {
+//        var us = DataUser()
+//        var count = 0
+//        DataUser::class.java.declaredFields.forEach() { member ->
+//            var type = member.name.javaClass.name
+//            when (type) {
+//                "java.lang.String" -> {
+//                    list.add(count, "")
+//                    us.javaClass.getDeclaredField(member.name).let { list.get(count) ?: "" }
+//                }
+//                "java.lang.Boolean" -> {
+//                    list.add(count, false.toString())
+//                    us.javaClass.getDeclaredField(member.name)
+//                        .let { list.get(count).toBoolean() ?: false }
+//                }
+//                "java.lang.Int" -> {
+//                    list.add(count, "0")
+//                    us.javaClass.getDeclaredField(member.name).let { list.get(count).toInt() ?: 0 }
+//                }
+//                else -> {
+//                    list.add(count, "")
+//                    us.javaClass.getDeclaredField(member.name).let { "" }
+//                }
+//            }
+//            count = count + 1
+//        }
+//        return us
+//    }
 
-    override fun createExemplarClassUserUseRepos(list: MutableList<String>): User {
-        var us = User()
+    override fun createExemplarClassUserUseRepos(nameOfCreateClass:String, list: MutableMap<String, String>): Any {
+        var hg: KClass<Any>
+        println(" nameOfCreateClass ${nameOfCreateClass}  list ${list} ")
+        var createClass = Class.forName(nameOfCreateClass)//.kotlin.objectInstance
+        //us::class.java.declaredFields.forEach {  }
+//        var us = us.objectInstance
+        var us = createClass.newInstance()
         var count = 0
-        User::class.java.declaredFields.forEach() { member ->
+        us.javaClass.declaredFields.forEach { n ->
+            println(n)
+        }
+//        us.declaredFields.forEach { n ->
+//            println(n)
+//        }
+
+        createClass.declaredFields.forEach() { member ->
             println("forEach  ${member.name}")
             var type = member.type.name  //.toString()
             var n: Any
@@ -91,39 +105,39 @@ class UserRepositoryImpl @Inject constructor(
             when (type) {
                 "java.lang.String" -> {
                     println(member.name)
-                    list.add(count, "em")
+
                     println("list ${list.toString()}")
-                    n = us.javaClass.getDeclaredField(member.name)
+                    n = us!!.javaClass.getDeclaredField(member.name)
                     n.isAccessible = true
-                    n.set(us, (list.get(count)))
+                    n.set(us, (list.getOrDefault(member.name, "em")))
                 }
                 "java.lang.Boolean" -> {
                     println(member.name)
-                    list.add(count, false.toString())
+
                     println("list ${list.toString()}")
-                    n = us.javaClass.getDeclaredField(member.name)
+                    n = us!!.javaClass.getDeclaredField(member.name)
                     n.isAccessible = true
-                    n.setBoolean(us, list.get(count).toBoolean() ?: false)
+                    n.setBoolean(us, list.getOrDefault(member.name, "false").toBoolean())
                 }
                 "java.lang.Integer" -> {
                     println(member.name)
-                    list.add(count, "0")
+
                     println("list ${list.toString()}")
-                    n = us.javaClass.getDeclaredField(member.name)
+                    n = us!!.javaClass.getDeclaredField(member.name)
                     n.isAccessible = true
-                    n.set(us, list.get(count).toInt() ?: 0)
+                    n.set(us, list.getOrDefault(member.name, "0").toInt())
                 }
                 else -> {
                     println(member.name)
-                    list.add(count, "")
+                    list.getOrDefault(member.name, "")
                     println("list ${list.toString()}")
-                    us.javaClass.getDeclaredField(member.name).set(us, "")
+                    us!!.javaClass.getDeclaredField(member.name).set(us, "")
                 }
             }
-            count = count + 1
+//            count = count + 1
         }
         println(us)
-        return us
+        return us!!
     }
 
 //    override fun getUserSharedPref(): User {

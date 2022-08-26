@@ -11,9 +11,9 @@ class CreateExemplarClassDataUserStorageUseCase @Inject constructor(
 
 
     fun execute(list: MutableList<String>): DataUser {
-        val listTagged: MutableList<String> = mutableListOf()
+        val listTagged: MutableMap<String, String> = mutableMapOf()
 
-        val result: DataUser = userRepository.createExemplarClassDataUserStorageUseRepos(listTagged)
+        val result: DataUser = userRepository.createExemplarClassUserUseRepos(nameOfCreateClass = "DataUserStorage", list = listTagged) as DataUser
         return result
     }
 }

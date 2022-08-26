@@ -13,6 +13,6 @@ interface UserRepository {
 
     fun saveDataUser(user: User):Boolean
     fun getDataUser(): MutableList<String>
-    fun createExemplarClassDataUserStorageUseRepos(list: MutableList<String>): DataUser
-    fun createExemplarClassUserUseRepos(list: MutableList<String>): User
+//    fun createExemplarClassDataUserStorageUseRepos(list: MutableList<String>): DataUser
+    fun createExemplarClassUserUseRepos(nameOfCreateClass:String, list: MutableMap<String, String>): Any
 }
